@@ -1,0 +1,89 @@
+{% extends "notesApp/master.html" %}
+
+{% block content %}
+<div class="container" style="padding-left:0;margin-left:0;padding-right:0;margin-right:0">
+    <div class="row">
+        <!-- <div class="col d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary border-end" style="width: 380px;padding-right:0;padding-left:0;">
+            <nav class="navbar">
+            <div class="container-fluid">
+                <span class="fs-5 fw-semibold">Category</span>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">New Category</button>
+                
+            </div>
+            </nav>
+                <div class="list-group list-group-flush border-bottom scrollarea">
+                <a href="#" class="category list-group-item list-group-item-action py-3 lh-sm" aria-current="true">
+                    <div class="d-flex w-100 align-items-center justify-content-between">                  
+                        <span><strong class="mb-1">All</strong></span>
+                    </div>
+                    
+                </a>
+                </div>
+        </div> -->
+        
+        <div class="col-2 d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary border-end" style="width: 380px;padding-right:0;padding-left:0;">
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <span class="fs-5 fw-semibold">Notes</span>
+                    <a class="nav-link" href="/notesApp/note/new">New Note</a></span>
+                </div>
+            </nav>
+                {% for note in notes_list %}
+                    <div class="list-group list-group-flush border-bottom scrollarea">
+                    <a href="#" class="note list-group-item list-group-item-action py-3 lh-sm" aria-current="true" id={{ note.id }}>
+                        <div class="d-flex w-100 align-items-center justify-content-between">                  
+                            <span><strong class="mb-1">{{ note.title }}</strong></span>
+                            <span>   
+                                <div class="col-20 mb-1 small">Created: {{ note.dateCreated }}</div>
+                                <div class="col-20 mb-1 small">Modified: {{ note.dateModified }}</div>
+                            </span> 
+                        </div>
+                        
+                    </a>
+                    </div>
+                {% endfor %}
+        </div>
+        <div class="col-8 flex-column bg-body-tertiary border-end" style="padding-right:0;padding-left:0;">
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <span id="noteTitle" class="fs-5 fw-semibold"></span>
+                    <a id="editButton" class="nav-link" style="display:none" href="/notesApp/note/edit/{{ note.id }}/">Edit Note</a></span>
+                </div>
+            </nav>
+            <div class="list-group list-group-flush border-bottom">
+                <div class="list-group-item py-3 lh-sm" aria-current="true" style="word-wrap:break-word;">
+                <p id="noteText"></p>
+            </div>
+        </div>
+    </div>    
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('a.note').click(function() {
+            $('a.note.list-group-item.active').removeClass("active");
+            $(this).addClass("active");
+            var noteId = this.id;
+            var text;
+            var response = $.get("/notesApp/noteText/"+noteId);
+            response.done(function(data, textStatus, jqXHR){
+                console.log(jqXHR.responseText);
+                $("#noteText").text(jqXHR.responseText);
+            });
+
+            response = $.get("/notesApp/noteTitle/"+noteId);
+            response.done(function(data, textStatus, jqXHR){
+                console.log(jqXHR.responseText);
+                $("#noteTitle").text(jqXHR.responseText);
+            });
+            $("#editButton").show();
+        });
+
+        $('a.category').click(function() {
+            $('a.category.list-group-item.active').removeClass("active");
+            $(this).addClass("active");
+            var items = document.getElementsByClassName("note list-group-item active");
+        });
+    });
+</script>
+{% endblock %}
