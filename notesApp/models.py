@@ -18,13 +18,26 @@ class Note(models.Model):
         return self.title + ": " + self.noteText
 
 class NoteForm(ModelForm):
-    class Meta:    
-        model = Note
-        fields = ['title','noteText', 'user']
-        
-    def __init__(self, *args, **kwargs):
+    def __init__(self, User, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["user"].disabled = True
+        self.fields["user"] = User
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+    def save(self, commit=True):
+        instance = super(NoteForm, self).save(commit=False)
+        instance.user = self.request.user
+        if commit:
+            instance.save()
+        return instance
+
+    class Meta:    
+        model = Note
+        fields = ['title','noteText']
+        
 
 class RegisterForm(UserCreationForm):
     class Meta:
