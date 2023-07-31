@@ -39,7 +39,7 @@ def newNote(request):
 
 def createNote(request):
     if request.method == 'POST':
-        form = NoteForm(request.POST, initial={"user":request.user})
+        form = NoteForm(request.POST)
         if form.is_valid():
             # create a new `Band` and save it to the db
             note = form.save()
@@ -48,7 +48,7 @@ def createNote(request):
             return redirect('note', note.id)
 
     else:
-        form = NoteForm(initial={"user":request.user}, )
+        form = NoteForm(initial = {'user':request.user})
 
     return render(request,
                 'notesApp/newNote.html',
