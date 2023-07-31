@@ -86,6 +86,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'notes.wsgi.application'
 
 
+# Session eginge for heroku
+if IS_HEROKU_APP:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
